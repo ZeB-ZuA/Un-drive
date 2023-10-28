@@ -83,7 +83,7 @@ app.post('/upload', upload.single('file'), (req, res) => {
     res.status(500).send('Error al conectar with the FTP server');
   });
 
-  // Conectar al servidor FTP using the defined options
+  // Conectar al servidor FTP 
   client.connect(ftpOptions);
 });
 
