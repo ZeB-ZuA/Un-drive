@@ -3,28 +3,42 @@
 <head>
   <title>Subir Archivo</title>
   <script>
-    function cargarLista() {
-      fetch('/list')
-        .then((response) => response.json())
-        .then((data) => {
-          const listaArchivos = document.getElementById('listaArchivos');
-          const ul = document.createElement('ul');
+function cargarLista() {
+  fetch('/list')
+    .then((response) => response.json())
+    .then((data) => {
+      const listaArchivos = document.getElementById('listaArchivos');
 
-          data.forEach((archivo) => {
-            const li = document.createElement('li');
-            li.textContent = archivo.name;
-            ul.appendChild(li);
-          });
+      data.forEach((archivo) => {
+        const div = document.createElement('div');
+        div.textContent = archivo.name;
 
-          listaArchivos.innerHTML = '';
-          listaArchivos.appendChild(ul);
-        })
-        .catch((error) => {
-          console.error('Error al cargar la lista de archivos:', error);
+        const btnEliminar = document.createElement('button');
+        btnEliminar.textContent = 'Eliminar';
+        btnEliminar.addEventListener('click', () => {
+          // lógica para eliminar el archivo
+          console.log('Eliminar', archivo.name);
         });
-    }
 
-    cargarLista();
+        const btnDescargar = document.createElement('button');
+        btnDescargar.textContent = 'Descargar';
+        btnDescargar.addEventListener('click', () => {
+          // lógica para descargar el archivo
+          console.log('Descargar', archivo.name);
+        });
+
+        div.appendChild(btnEliminar);
+        div.appendChild(btnDescargar);
+        listaArchivos.appendChild(div);
+      });
+    })
+    .catch((error) => {
+      console.error('Error al cargar la lista de archivos:', error);
+    });
+}
+
+cargarLista();
+
   </script>
 </head>
 <body>
