@@ -115,47 +115,27 @@ app.delete('/delete/:filename', (req, res) => {
 
   client.connect(ftpOptions);
 });
-// Definir una nueva ruta DELETE en tu servidor Express
 app.delete('/delete/:filename', (req, res) => {
-  // Obtener el nombre del archivo de los parámetros de la ruta
   const filename = req.params.filename;
-
-  // Crear una nueva instancia del cliente FTP
   const client = new ftp();
-
-  // Escuchar el evento 'ready' que se dispara cuando el cliente FTP está listo para enviar comandos
   client.on('ready', () => {
-    // Eliminar el archivo del servidor FTP
     client.delete('/home/sua/FTP/' + filename, (err) => {
-      // Si hay un error al eliminar el archivo, enviar una respuesta con un código de estado 500
       if (err) {
         console.error('Error al eliminar el archivo:', err);
         res.status(500).send('Error al eliminar el archivo');
       } else {
-        // Si no hay errores, enviar una respuesta con un mensaje de éxito
         console.log('Archivo eliminado con éxito.');
         res.send('Archivo eliminado con éxito');
       }
-      // Cerrar la conexión FTP
       client.end();
     });
   });
-
-  // Escuchar el evento 'error' que se dispara cuando ocurre un error en la conexión FTP
   client.on('error', (err) => {
     console.error('Error al conectar con el servidor FTP:', err);
     res.status(500).send('Error al conectar con el servidor FTP');
   });
-
-  // Conectar al servidor FTP con las opciones definidas en 'ftpOptions'
   client.connect(ftpOptions);
 });
-
-
-
-
-
-
 
 app.listen(port, () => {
   console.log(`Servidor escuchando por el puerto: ${port}`);
