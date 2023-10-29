@@ -22,41 +22,10 @@ app.get('/', (req, res) => {
   res.send("hello")
 });
 //****************************************LISTAR ARCHIVOS**********************************\\
-// Ruta "/list": Responde a solicitudes GET para listar archivos en el servidor FTP
-app.get('/list/', (req, res) => {
-  // Crear una instancia de cliente FTP
+
+app.get('/list/:foldername?', (req, res) => {
+  const foldername = req.params.foldername || '';
   const client = new ftp();
-
-  // Manejar eventos para la conexión FTP
-  client.on('ready', () => {
-    console.log('Conexión al servidor FTP exitosa.');
-
-    // Definimos una ruta GET en /list que se conecta al servidor FTP 
-    // y obtiene una lista de archivos en la carpeta /home/sua/FTP
-    client.list('/home/sua/FTP', (err, list) => {
-      if (err) {
-        console.error('Error al listar archivos en el servidor FTP:', err);
-        res.status(500).send('Error al listar archivos en el servidor FTP');
-      } else {
-        console.log('Archivos en el servidor FTP:', list);
-        res.json(list); // Enviar la lista en formato JSON al cliente
-      }
-      client.end(); // Cerrar la conexión FTP
-    });
-  });
-
-  client.on('error', (err) => {
-    console.error('Error al conectar con el servidor FTP:', err);
-    res.status(500).send('Error al conectar con el servidor FTP');
-  });
-
-  // Conectar al servidor FTP utilizando las opciones definidas
-  client.connect(ftpOptions);
-});
-app.get('/list/:foldername', (req, res) => {
-  const foldername = req.params.foldername;
-  const client = new ftp();
-
   client.on('ready', () => {
     client.list('/home/sua/FTP/' + foldername, (err, list) => {
       if (err) {
@@ -76,10 +45,6 @@ app.get('/list/:foldername', (req, res) => {
   });
   client.connect(ftpOptions);
 });
-
-
-
-
 
 
 //****************************************SUBIR ARCHIVOS**********************************\\
@@ -189,6 +154,33 @@ app.delete('/delete/:filename', (req, res) => {
   // Conectar al servidor FTP con las opciones definidas en 'ftpOptions'
   client.connect(ftpOptions);
 });
+//****************************************CREAR CARPETAS**********************************\\
+app.post('/create/:foldername', (req, res) => {
+  const foldername = req.params.foldername;
+  const client = new ftp();
+
+  client.on('ready', () => {
+    client.mkdir('/home/sua/FTP/' + foldername, true, (err) => {
+      if (err) {
+        console.error('Error al crear la carpeta:', err);
+        res.status(500).send('Error al crear la carpeta');
+      } else {
+        console.log('Carpeta creada con éxito.');
+        res.send('Carpeta creada con éxito');
+      }
+      client.end();
+    });
+  });
+
+  client.on('error', (err) => {
+    console.error('Error al conectar con el servidor FTP:', err);
+    res.status(500).send('Error al conectar con el servidor FTP');
+  });
+
+
+  client.connect(ftpOptions);
+});
+
 
 // Iniciar el servidor
 app.listen(port, () => {
