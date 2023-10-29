@@ -21,7 +21,7 @@ const upload = multer({ storage: storage });
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
 });
-
+//****************************************LISTAR ARCHIVOS**********************************\\
 // Ruta "/list": Responde a solicitudes GET para listar archivos en el servidor FTP
 app.get('/list', (req, res) => {
   // Crear una instancia de cliente FTP
@@ -53,7 +53,7 @@ app.get('/list', (req, res) => {
   // Conectar al servidor FTP utilizando las opciones definidas
   client.connect(ftpOptions);
 });
-
+//****************************************SUBIR ARCHIVOS**********************************\\
 // Ruta "/upload": Responde a solicitudes POST para cargar archivos en el servidor FTP
 app.post('/upload', upload.single('file'), (req, res) => {
   const fileBuffer = req.file.buffer; // Obtener el archivo cargado en memoria
@@ -64,7 +64,6 @@ app.post('/upload', upload.single('file'), (req, res) => {
   // Manejar eventos para la conexión FTP
   client.on('ready', () => {
     console.log('Conexión al servidor FTP exitosa.');
-
     // Subir el archivo al directorio '/home/sua/FTP' en el servidor FTP
     client.put(fileBuffer, '/home/sua/FTP/' + req.file.originalname, (err) => {
       if (err) {
@@ -86,19 +85,16 @@ app.post('/upload', upload.single('file'), (req, res) => {
   // Conectar al servidor FTP 
   client.connect(ftpOptions);
 });
-
+//****************************************DESCARGAR ARCHIVOS**********************************\\
 // Importar Express.js y crear una ruta para descargar archivos
 app.get('/download/:filename', (req, res) => {
   // Obtener el nombre del archivo a descargar desde los parámetros de la solicitud
   const filename = req.params.filename;
-
   // Crear una instancia de un cliente FTP
   const client = new ftp();
-
   // Manejar el evento 'ready' del cliente FTP (conexión exitosa)
   client.on('ready', () => {
     console.log('Conexión al servidor FTP exitosa.');
-
     // Intentar obtener el archivo del servidor FTP
     client.get('/home/sua/FTP/' + filename, (err, stream) => {
       if (err) {
@@ -108,19 +104,15 @@ app.get('/download/:filename', (req, res) => {
       } else {
         // Iniciar la descarga del archivo
         console.log('Descarga de archivo iniciada.');
-
         // Configurar la respuesta HTTP para que el navegador interprete la respuesta como una descarga de archivo
         res.setHeader('Content-Disposition', 'attachment; filename=' + filename);
-
         // Transmitir el contenido del archivo al navegador del usuario
         stream.pipe(res);
       }
-
       // Cerrar la conexión FTP
       client.end();
     });
   });
-
   // Manejar el evento 'error' del cliente FTP (error de conexión)
   client.on('error', (err) => {
     // Mostrar un mensaje de error y responder con un código de estado HTTP 500 en caso de error de conexión
@@ -129,6 +121,43 @@ app.get('/download/:filename', (req, res) => {
   });
 
   // Conectar al servidor FTP utilizando las opciones previamente configuradas
+  client.connect(ftpOptions);
+});
+
+
+//****************************************BORRAR ARCHIVOS**********************************\\
+app.delete('/delete/:filename', (req, res) => {
+  // Obtener el nombre del archivo de los parámetros de la ruta
+  const filename = req.params.filename;
+
+  // Crear una nueva instancia del cliente FTP
+  const client = new ftp();
+
+  // Escuchar el evento 'ready' que se dispara cuando el cliente FTP está listo para enviar comandos
+  client.on('ready', () => {
+    // Eliminar el archivo del servidor FTP
+    client.delete('/home/sua/FTP/' + filename, (err) => {
+      // Si hay un error al eliminar el archivo, enviar una respuesta con un código de estado 500
+      if (err) {
+        console.error('Error al eliminar el archivo:', err);
+        res.status(500).send('Error al eliminar el archivo');
+      } else {
+        // Si no hay errores, enviar una respuesta con un mensaje de éxito
+        console.log('Archivo eliminado con éxito.');
+        res.send('Archivo eliminado con éxito');
+      }
+      // Cerrar la conexión FTP
+      client.end();
+    });
+  });
+
+  // Escuchar el evento 'error' que se dispara cuando ocurre un error en la conexión FTP
+  client.on('error', (err) => {
+    console.error('Error al conectar con el servidor FTP:', err);
+    res.status(500).send('Error al conectar con el servidor FTP');
+  });
+
+  // Conectar al servidor FTP con las opciones definidas en 'ftpOptions'
   client.connect(ftpOptions);
 });
 
