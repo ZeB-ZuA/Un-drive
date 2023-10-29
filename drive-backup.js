@@ -17,12 +17,11 @@ app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
 });
 
-app.get('/list', (req, res) => {
+app.get('/list/', (req, res) => {
   const client = new ftp();
-
   client.on('ready', () => {
     console.log('Conexión al servidor FTP exitosa.');
-    client.list('/home/sua/FTP', (err, list) => {
+    client.list('/home/sua/FTP/', (err, list) => {
       if (err) {
         console.error('Error al listar archivos en el servidor FTP:', err);
         res.status(500).send('Error al listar archivos en el servidor FTP');
@@ -40,6 +39,44 @@ app.get('/list', (req, res) => {
   });
   client.connect(ftpOptions);
 });
+
+
+
+app.get('/list/:foldername', (req, res) => {
+  const foldername = req.params.foldername;
+  const client = new ftp();
+
+  client.on('ready', () => {
+    client.list('/home/sua/FTP/' + foldername, (err, list) => {
+      if (err) {
+        console.error('Error al listar archivos en el servidor FTP:', err);
+        res.status(500).send('Error al listar archivos en el servidor FTP');
+      } else {
+        console.log('Archivos en el servidor FTP:', list);
+        res.json(list);
+      }
+      client.end();
+    });
+  });
+
+  client.on('error', (err) => {
+    console.error('Error al conectar con el servidor FTP:', err);
+    res.status(500).send('Error al conectar con el servidor FTP');
+  });
+  client.connect(ftpOptions);
+});
+
+
+
+
+
+
+
+
+
+
+
+
 app.post('/upload', upload.single('file'), (req, res) => {
   const fileBuffer = req.file.buffer;
   const client = new ftp();
@@ -136,6 +173,37 @@ app.delete('/delete/:filename', (req, res) => {
   });
   client.connect(ftpOptions);
 });
+
+
+app.post('/create/:foldername', (req, res) => {
+  const foldername = req.params.foldername;
+  const client = new ftp();
+
+  client.on('ready', () => {
+    client.mkdir('/home/sua/FTP/' + foldername, true, (err) => {
+      if (err) {
+        console.error('Error al crear la carpeta:', err);
+        res.status(500).send('Error al crear la carpeta');
+      } else {
+        console.log('Carpeta creada con éxito.');
+        res.send('Carpeta creada con éxito');
+      }
+      client.end();
+    });
+  });
+
+  client.on('error', (err) => {
+    console.error('Error al conectar con el servidor FTP:', err);
+    res.status(500).send('Error al conectar con el servidor FTP');
+  });
+
+  client.connect(ftpOptions);
+});
+
+
+
+
+
 
 app.listen(port, () => {
   console.log(`Servidor escuchando por el puerto: ${port}`);

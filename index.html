@@ -4,8 +4,8 @@
 <head>
   <title>Subir Archivo</title>
   <script>
-    function cargarLista() {
-      fetch('/list')
+    function cargarLista(foldename = '') {
+      fetch('/list/' + foldename)
         .then((response) => response.json())
         .then((data) => {
           const listaArchivos = document.getElementById('listaArchivos');
@@ -13,6 +13,12 @@
           data.forEach((archivo) => {
             const div = document.createElement('div');
             div.textContent = archivo.name;
+            if (archivo.type === 'd') {
+              div.style.cursor = 'pointer';
+              div.addEventListener('click', () => cargarLista(archivo.name));
+            }
+
+
             const btnEliminar = document.createElement('button');
             btnEliminar.textContent = 'Eliminar';
             btnEliminar.addEventListener('click', () => {
@@ -30,7 +36,7 @@
                   console.error(error);
 
                 });
-              cargarLista(); 
+              cargarLista();
             });
             const btnDescargar = document.createElement('button');
             btnDescargar.textContent = 'Descargar';
@@ -53,8 +59,6 @@
     }
 
     cargarLista();
-
-
   </script>
 </head>
 
@@ -64,6 +68,10 @@
     <input type="file" name="file" accept=".jpg, .png, .pdf, .doc, .docx, .xls, .xlsx, .ppt, .pptx">
     <button type="submit">Subir</button>
   </form>
+  <h2>Crear Carpeta en el Servidor FTP</h2>
+  <input type="text" id="nombreCarpeta" placeholder=" Nombre de la carpeta">
+  <button onclick="crearCarpeta()">Crear</button>
+  <br>
   <script>
 
     document.getElementById('uploadForm').addEventListener('submit', function (event) {
@@ -89,10 +97,29 @@
           console.error(error);
         });
     });
+    function crearCarpeta() {
+      const nombreCarpeta = document.getElementById('nombreCarpeta').value;
+
+      fetch('/create/' + nombreCarpeta, { method: 'POST' })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error('Error al crear la carpeta');
+          }
+          return response.text();
+        })
+        .then((message) => {
+          console.log(message);
+          cargarLista();
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    };
   </script>
 
 
   <br>
+  <h2>Lista de archivos en el servidor</h2>
   <div id="listaArchivos"></div>
 </body>
 

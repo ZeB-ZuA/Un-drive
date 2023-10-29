@@ -23,7 +23,7 @@ app.get('/', (req, res) => {
 });
 //****************************************LISTAR ARCHIVOS**********************************\\
 // Ruta "/list": Responde a solicitudes GET para listar archivos en el servidor FTP
-app.get('/list', (req, res) => {
+app.get('/list/', (req, res) => {
   // Crear una instancia de cliente FTP
   const client = new ftp();
 
@@ -53,6 +53,35 @@ app.get('/list', (req, res) => {
   // Conectar al servidor FTP utilizando las opciones definidas
   client.connect(ftpOptions);
 });
+app.get('/list/:foldername', (req, res) => {
+  const foldername = req.params.foldername;
+  const client = new ftp();
+
+  client.on('ready', () => {
+    client.list('/home/sua/FTP/' + foldername, (err, list) => {
+      if (err) {
+        console.error('Error al listar archivos en el servidor FTP:', err);
+        res.status(500).send('Error al listar archivos en el servidor FTP');
+      } else {
+        console.log('Archivos en el servidor FTP:', list);
+        res.json(list);
+      }
+      client.end();
+    });
+  });
+
+  client.on('error', (err) => {
+    console.error('Error al conectar con el servidor FTP:', err);
+    res.status(500).send('Error al conectar con el servidor FTP');
+  });
+  client.connect(ftpOptions);
+});
+
+
+
+
+
+
 //****************************************SUBIR ARCHIVOS**********************************\\
 // Ruta "/upload": Responde a solicitudes POST para cargar archivos en el servidor FTP
 app.post('/upload', upload.single('file'), (req, res) => {
@@ -87,42 +116,42 @@ app.post('/upload', upload.single('file'), (req, res) => {
 });
 //****************************************DESCARGAR ARCHIVOS**********************************\\
 // Importar Express.js y crear una ruta para descargar archivos
-app.get('/download/:filename', (req, res) => {
-  // Obtener el nombre del archivo a descargar desde los parámetros de la solicitud
-  const filename = req.params.filename;
-  // Crear una instancia de un cliente FTP
-  const client = new ftp();
-  // Manejar el evento 'ready' del cliente FTP (conexión exitosa)
-  client.on('ready', () => {
-    console.log('Conexión al servidor FTP exitosa.');
-    // Intentar obtener el archivo del servidor FTP
-    client.get('/home/sua/FTP/' + filename, (err, stream) => {
-      if (err) {
-        // Mostrar un mensaje de error y responder con un código de estado HTTP 500 en caso de error
-        console.error('Error al descargar el archivo del servidor FTP:', err);
-        res.status(500).send('Error al descargar el archivo del servidor FTP');
-      } else {
-        // Iniciar la descarga del archivo
-        console.log('Descarga de archivo iniciada.');
-        // Configurar la respuesta HTTP para que el navegador interprete la respuesta como una descarga de archivo
-        res.setHeader('Content-Disposition', 'attachment; filename=' + filename);
-        // Transmitir el contenido del archivo al navegador del usuario
-        stream.pipe(res);
-      }
-      // Cerrar la conexión FTP
-      client.end();
+  app.get('/download/:filename', (req, res) => {
+    // Obtener el nombre del archivo a descargar desde los parámetros de la solicitud
+    const filename = req.params.filename;
+    // Crear una instancia de un cliente FTP
+    const client = new ftp();
+    // Manejar el evento 'ready' del cliente FTP (conexión exitosa)
+    client.on('ready', () => {
+      console.log('Conexión al servidor FTP exitosa.');
+      // Intentar obtener el archivo del servidor FTP
+      client.get('/home/sua/FTP/' + filename, (err, stream) => {
+        if (err) {
+          // Mostrar un mensaje de error y responder con un código de estado HTTP 500 en caso de error
+          console.error('Error al descargar el archivo del servidor FTP:', err);
+          res.status(500).send('Error al descargar el archivo del servidor FTP');
+        } else {
+          // Iniciar la descarga del archivo
+          console.log('Descarga de archivo iniciada.');
+          // Configurar la respuesta HTTP para que el navegador interprete la respuesta como una descarga de archivo
+          res.setHeader('Content-Disposition', 'attachment; filename=' + filename);
+          // Transmitir el contenido del archivo al navegador del usuario
+          stream.pipe(res);
+        }
+        // Cerrar la conexión FTP
+        client.end();
+      });
     });
-  });
-  // Manejar el evento 'error' del cliente FTP (error de conexión)
-  client.on('error', (err) => {
-    // Mostrar un mensaje de error y responder con un código de estado HTTP 500 en caso de error de conexión
-    console.error('Error al conectar con el servidor FTP:', err);
-    res.status(500).send('Error al conectar con el servidor FTP');
-  });
+    // Manejar el evento 'error' del cliente FTP (error de conexión)
+    client.on('error', (err) => {
+      // Mostrar un mensaje de error y responder con un código de estado HTTP 500 en caso de error de conexión
+      console.error('Error al conectar con el servidor FTP:', err);
+      res.status(500).send('Error al conectar con el servidor FTP');
+    });
 
-  // Conectar al servidor FTP utilizando las opciones previamente configuradas
-  client.connect(ftpOptions);
-});
+    // Conectar al servidor FTP utilizando las opciones previamente configuradas
+    client.connect(ftpOptions);
+  });
 
 
 //****************************************BORRAR ARCHIVOS**********************************\\
