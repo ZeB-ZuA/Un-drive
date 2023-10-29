@@ -16,10 +16,10 @@ const ftpOptions = {
 /// Configuramos Multer para almacenar los archivos cargados en la memoria como Buffer objects
 const storage = multer.memoryStorage(); // Almacenar archivos en memoria
 const upload = multer({ storage: storage });
-
 // Definimos una ruta GET en la raíz ('/') del servidor que envía un archivo HTML al cliente
+app.use(express.static('public'));
 app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/index.html');
+  res.send("hello")
 });
 //****************************************LISTAR ARCHIVOS**********************************\\
 // Ruta "/list": Responde a solicitudes GET para listar archivos en el servidor FTP
