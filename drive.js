@@ -157,11 +157,13 @@ app.delete('/delete/:filename', (req, res) => {
   client.connect(ftpOptions);
 });
 //****************************************CREAR CARPETAS**********************************\\
+// Ruta "/create": Responde a solicitudes POST para crear una carpeta en el servidor FTP
 app.post('/create/:foldername', (req, res) => {
   const foldername = req.params.foldername;
   const client = new ftp();
-
+// Manejar eventos para la conexión FTP
   client.on('ready', () => {
+    // Crear la carpeta '/home/sua/FTP/' en el servidor FTP
     client.mkdir('/home/sua/FTP/' + foldername, true, (err) => {
       if (err) {
         console.error('Error al crear la carpeta:', err);
@@ -170,7 +172,7 @@ app.post('/create/:foldername', (req, res) => {
         console.log('Carpeta creada con éxito.');
         res.send('Carpeta creada con éxito');
       }
-      client.end();
+      client.end(); // Cerrar la conexión FTP
     });
   });
 
@@ -180,7 +182,7 @@ app.post('/create/:foldername', (req, res) => {
   });
 
 
-  client.connect(ftpOptions);
+  client.connect(ftpOptions); // Conectar al servidor FTP
 });
 
 
