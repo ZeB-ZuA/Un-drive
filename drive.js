@@ -22,11 +22,13 @@ app.get('/', (req, res) => {
   res.send("hello")
 });
 //****************************************LISTAR ARCHIVOS**********************************\\
-
+// Ruta "/list": Responde a solicitudes GET para listar archivos en el servidor FTP
 app.get('/list/:foldername?', (req, res) => {
-  const foldername = req.params.foldername || '';
-  const client = new ftp();
+  const foldername = req.params.foldername || ''; // Obtener el nombre de la carpeta de los parámetros de la solicitud
+  const client = new ftp();// Crear una instancia de cliente FTP
+  // Manejar eventos para la conexión FTP
   client.on('ready', () => {
+    // Listar archivos en el directorio '/home/sua/FTP/foldername' en el servidor FTP
     client.list('/home/sua/FTP/' + foldername, (err, list) => {
       if (err) {
         console.error('Error al listar archivos en el servidor FTP:', err);
@@ -35,7 +37,7 @@ app.get('/list/:foldername?', (req, res) => {
         console.log('Archivos en el servidor FTP:', list);
         res.json(list);
       }
-      client.end();
+      client.end(); // Cerrar la conexión FTP
     });
   });
 
