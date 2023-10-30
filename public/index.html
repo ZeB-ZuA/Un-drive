@@ -4,6 +4,7 @@
 <head>
   <title>Subir Archivo</title>
   <link href="style.css" rel="stylesheet" type="text/css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
   <script>
     
   </script>
@@ -11,13 +12,25 @@
 
 <body>
   <header>
-    <img src="https://ssl.gstatic.com/images/branding/product/1x/drive_2020q4_48dp.png" />
-    <span class="title">Un-Drive</span>
+    <div class="container-logo">
+      <img src="https://ssl.gstatic.com/images/branding/product/1x/drive_2020q4_48dp.png" />
+      <span class="title">Un-Drive</span>
+    </div>
+    <div class="container-search">
+      <input type="search" placeholder="Buscar en un-drive">
+    </div>
+
   </header>
 
   <main>
     <section>
+       <button onclick="newFile()">
+        <span> <span class="material-symbols-outlined">add</span> Nuevo</span>
+       </button> 
 
+      <ul>
+        <li> <span class="material-symbols-outlined">folder</span>Mi unidad</li>
+      </ul> 
     </section>
 
     <section class="container-files">
@@ -34,112 +47,14 @@
       <input type="text" id="nombreCarpeta" placeholder=" Nombre de la carpeta">
       <button onclick="crearCarpeta()">Crear</button>
       <br>
+
+      <div id="listaArchivos">
+      </div>
     </section>
 
   </main>
-
-  <footer></footer>
-  <script>
-    
-    function cargarLista(foldername = '') {
-      fetch('/list/'+ foldername)
-        .then((response) => response.json())
-        .then((data) => {
-          const listaArchivos = document.getElementById("listaArchivos");
-          listaArchivos.innerHTML = "";
-          data.forEach((archivo) => {
-            const div = document.createElement("div");
-            div.textContent = archivo.name;
-            if (archivo.type === 'd') {
-              div.style.cursor = 'pointer';
-              div.addEventListener('click', () => {
-                cargarLista(archivo.name);
-              });
-            }
-            const btnEliminar = document.createElement("button");
-            btnEliminar.textContent = "Eliminar";
-            btnEliminar.addEventListener("click", () => {
-              fetch("/delete/" + archivo.name, { method: "DELETE" })
-                .then((response) => {
-                  if (!response.ok) {
-                    throw new Error("Error al eliminar el archivo");
-                  }
-                  return response.text();
-                })
-                .then((message) => {
-                  console.log(message);
-                })
-                .catch((error) => {
-                  console.error(error);
-                });
-              cargarLista();
-            });
-            const btnDescargar = document.createElement("button");
-            btnDescargar.textContent = "Descargar";
-            btnDescargar.addEventListener("click", () => {
-              const link = document.createElement("a");
-              link.href = "/download/" + archivo.name;
-              link.download = archivo.name;
-              link.click();
-            });
-
-            div.appendChild(btnEliminar);
-            div.appendChild(btnDescargar);
-            listaArchivos.appendChild(div);
-          });
-        })
-        .catch((error) => {
-          console.error("Error al cargar la lista de archivos:", error);
-        });
-    }
-    cargarLista();
-    document
-      .getElementById("uploadForm")
-      .addEventListener("submit", function (event) {
-        event.preventDefault(); // Evitar que el formulario se envíe de la forma predeterminada
-
-        const formData = new FormData(this); // Crear un objeto FormData a partir del formulario
-
-        fetch("/upload", {
-          method: "POST",
-          body: formData,
-        })
-          .then((response) => {
-            if (!response.ok) {
-              throw new Error("Error al subir el archivo");
-            }
-            return response.text();
-          })
-          .then((message) => {
-            console.log(message);
-            cargarLista(); // Recargar la lista de archivos después de subir
-          })
-          .catch((error) => {
-            console.error(error);
-          });
-      });
-      function crearCarpeta() {
-      const nombreCarpeta = document.getElementById('nombreCarpeta').value;
-
-      fetch('/create/' + nombreCarpeta, { method: 'POST' })
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error('Error al crear la carpeta');
-          }
-          return response.text();
-        })
-        .then((message) => {
-          console.log(message);
-          cargarLista();
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    };
-  </script>
-
-  <br />
-  <div id="listaArchivos"></div>
+  <script src="./listar.js"></script>
+  <script src="./conditionals.js"></script>
 </body>
 
 </html>
