@@ -4,6 +4,17 @@ const multer = require('multer');
 const ftp = require('ftp');
 const app = express();
 const port = 3000;
+const https = require('https');
+const fs = require('fs');
+const sslOptions = {
+  key: fs.readFileSync('/home/suasebas/drive.key'),
+  cert: fs.readFileSync('/home/suasebas/drive.crt'),
+  passphrase: 'qwe123',
+};
+const Server = https.createServer(sslOptions, app);
+Server.listen(port, () => {
+  console.log(`Servidor escuchando por el puerto: ${port}`);
+});
 
 const ftpOptions = {
   host: '192.168.1.111',
@@ -142,15 +153,6 @@ app.post('/create/:foldername', (req, res) => {
   });
 
   client.connect(ftpOptions);
-});
-
-
-
-
-
-
-app.listen(port, () => {
-  console.log(`Servidor escuchando por el puerto: ${port}`);
 });
 
 

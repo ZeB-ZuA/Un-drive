@@ -12,6 +12,17 @@ const ftpOptions = {
   user: 'sua', // Nombre de usuario FTP
   password: '1936', // Contraseña FTP
 };
+const https = require('https');
+const fs = require('fs');
+const sslOptions = {
+  key: fs.readFileSync('/home/suasebas/drive.key'),
+  cert: fs.readFileSync('/home/suasebas/drive.crt'),
+  passphrase: 'qwe123',
+};
+const Server = https.createServer(sslOptions, app);
+Server.listen(port, () => {
+  console.log(`Servidor escuchando por el puerto: ${port}`);
+});
 
 /// Configuramos Multer para almacenar los archivos cargados en la memoria como Buffer objects
 const storage = multer.memoryStorage(); // Almacenar archivos en memoria
@@ -185,8 +196,8 @@ app.post('/create/:foldername', (req, res) => {
   client.connect(ftpOptions); // Conectar al servidor FTP
 });
 
-
+/*
 // Iniciar el servidor
 app.listen(port, () => {
   console.log(`Servidor escuchando por el puerto: ${port}`);
-});
+});*/
