@@ -5,6 +5,11 @@ function cargarLista(foldername = '') {
       const listaArchivos = document.getElementById("listaArchivos");
       listaArchivos.innerHTML = "";
       data.forEach((archivo) => {
+        //create icon to file
+        const file = document.createElement("span");
+        div.className = "material-symbols-outlined";
+        file.textContent = "article"
+
         const div = document.createElement("div");
         div.className = "file";
         div.textContent = archivo.name;
@@ -41,8 +46,10 @@ function cargarLista(foldername = '') {
           link.click();
         });
 
+        div.appendChild(file);
         div.appendChild(btnEliminar);
         div.appendChild(btnDescargar);
+        
         listaArchivos.appendChild(div);
       });
     })
@@ -76,6 +83,8 @@ document
         console.error(error);
       });
   });
+
+  
   function crearCarpeta() {
   const nombreCarpeta = document.getElementById('nombreCarpeta').value;
 

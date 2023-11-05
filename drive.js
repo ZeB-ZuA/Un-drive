@@ -21,7 +21,7 @@ const sslOptions = {
 };
 const Server = https.createServer(sslOptions, app);
 Server.listen(port, () => {
-  console.log(`Servidor escuchando por el puerto: ${port}`);
+  console.log(`Servidor escuchando por el puerto: ${port} =>  http://localhost:3000/`);
 });
 
 /// Configuramos Multer para almacenar los archivos cargados en la memoria como Buffer objects
@@ -30,7 +30,7 @@ const upload = multer({ storage: storage });
 // Definimos una ruta GET en la raíz ('/') del servidor que envía un archivo HTML al cliente
 app.use(express.static('public'));
 app.get('/', (req, res) => {
-  res.send("hello")
+  res.send("ok")
 });
 //****************************************LISTAR ARCHIVOS**********************************\\
 // Ruta "/list": Responde a solicitudes GET para listar archivos en el servidor FTP

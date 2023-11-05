@@ -5,7 +5,7 @@ body{
 }
 header{
     height: 60px;
-    padding: 10px 30px;
+    padding: 8px 16px;
     display: grid;
     grid-template-columns: 1fr 6fr;
     gap: 30px;
@@ -23,7 +23,7 @@ header{
 main{
     display: grid;
     grid-template-columns: 1fr 6fr;
-    padding: 10px 30px;
+    padding: 0px 16px 10px 16px;
     min-height: 70vh;
     gap: 30px;
 }
@@ -46,7 +46,7 @@ main{
     font-size: 14px;
 }
 
-button{
+.btn-white{
     box-shadow: var(--dt-surface1-shadow,0 1px 2px 0 rgba(60,64,67,.3),0 1px 3px 1px rgba(60,64,67,.15));
     color: rgb(60,64,67);
     border: none;
@@ -58,6 +58,15 @@ button{
     place-content: center start;
     border-radius: 10px;
     background-color: #ffffff;
+}
+.btn-white:hover{
+    background-color: #e3ecfc;
+    box-shadow: var(5px 5px 5px 10px rgba(64, 67, 70, 0.3),5px 5px 3px 5px rgba(60,64,67,.15));
+}
+h2{
+    display: flex;
+    align-items: center;
+    gap: 15px
 }
 span{
     display: flex;
@@ -81,13 +90,58 @@ li{
     align-items: center;
     gap: 10px;
 }
-input[type="search"] {
-    height: 46px;
-    width: 80%;
+.container-search-grid{
     background-color: #e3ecfc;
+    height: 40px;
+    width: 80%;
+    padding: 5px 10px;
+    border-radius: 100px;
+    display: grid;
+    grid-template-columns: 1fr 15fr 1fr;
+    justify-content: center;
+    align-items: center;
+}
+input[type="search"] {
     border: none;
     outline: none;
     border-radius: 100px;
-    padding: 5px 10px;
-  }
+    height: 100%;
+    background: transparent;
+}
+
+.container-create-folder > #nombreCarpeta{
+    padding: 10px;
+    border-radius: 5px;
+    height: 20px;
+    border: 1px solid gray;
+    outline: none;
+}
+
+.container-create-folder > #nombreCarpeta:focus{
+    border: 2px solid #0b57d0;
+}
+.container-create-folder > button{
+    color: #0b57d0;
+    font-weight: 600;
+    border: none;
+    background-color: transparent;
+    outline: none;
+    padding: 15px 10px;
+    border-radius: 10px;
+}
+
+.container-create-folder > button:hover{
+    background-color: #e3ecfc;
+}
+
+
+#uploadForm > .custom-file-upload{
+    display: flex;
+    justify-content: flex-start;
+    border: dashed 2px #e3ecfc;
+    height: 100px;
+    width: 300px;
+    margin-bottom: 16px;
+}
+
 
