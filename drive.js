@@ -21,7 +21,7 @@ const sslOptions = {
 };
 const Server = https.createServer(sslOptions, app);
 Server.listen(port, () => {
-  console.log(`Servidor escuchando por el puerto: ${port} =>  http://localhost:3000/`);
+  console.log(`Servidor escuchando por el puerto: ${port} =>  https://localhost:3000/`);
 });
 
 /// Configuramos Multer para almacenar los archivos cargados en la memoria como Buffer objects

@@ -7,7 +7,7 @@ function cargarLista(foldername = '') {
       data.forEach((archivo) => {
         //create icon to file
         const file = document.createElement("span");
-        div.className = "material-symbols-outlined";
+        file.className = "material-symbols-outlined";
         file.textContent = "article"
 
         const div = document.createElement("div");
@@ -58,6 +58,7 @@ function cargarLista(foldername = '') {
     });
 }
 cargarLista();
+
 document
   .getElementById("uploadForm")
   .addEventListener("submit", function (event) {
@@ -102,4 +103,6 @@ document
     .catch((error) => {
       console.error(error);
     });
+
+    document.getElementById('nombreCarpeta').value = '';
 };
