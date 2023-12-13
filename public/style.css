@@ -46,6 +46,11 @@ main{
     font-size: 14px;
 }
 
+.file > button {
+    padding: 10px;
+    margin: 0 10px;
+}
+
 .btn-white{
     box-shadow: var(--dt-surface1-shadow,0 1px 2px 0 rgba(60,64,67,.3),0 1px 3px 1px rgba(60,64,67,.15));
     color: rgb(60,64,67);

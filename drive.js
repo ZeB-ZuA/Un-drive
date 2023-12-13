@@ -7,9 +7,9 @@ const port = 3000; // Definir el puerto en el que el servidor escuchará las sol
 
 // Configuración de opciones para la conexión FTP
 const ftpOptions = {
-  host: '192.168.1.111', // Dirección del servidor FTP
+  host: '192.168.1.112', // Dirección del servidor FTP
   port: 21, // Puerto para la conexión FTP
-  user: 'sua', // Nombre de usuario FTP
+  user: 'suasebas', // Nombre de usuario FTP
   password: '1936', // Contraseña FTP
 };
 const https = require('https');
@@ -40,7 +40,7 @@ app.get('/list/:foldername?', (req, res) => {
   // Manejar eventos para la conexión FTP
   client.on('ready', () => {
     // Listar archivos en el directorio '/home/sua/FTP/foldername' en el servidor FTP
-    client.list('/home/sua/FTP/' + foldername, (err, list) => {
+    client.list('/home/suasebas/' + foldername, (err, list) => {
       if (err) {
         console.error('Error al listar archivos en el servidor FTP:', err);
         res.status(500).send('Error al listar archivos en el servidor FTP');
@@ -72,7 +72,7 @@ app.post('/upload', upload.single('file'), (req, res) => {
   client.on('ready', () => {
     console.log('Conexión al servidor FTP exitosa.');
     // Subir el archivo al directorio '/home/sua/FTP' en el servidor FTP
-    client.put(fileBuffer, '/home/sua/FTP/' + req.file.originalname, (err) => {
+    client.put(fileBuffer, '/home/suasebas/' + req.file.originalname, (err) => {
       if (err) {
         console.error('Error al subir el archivo al servidor FTP:', err);
         res.status(500).send('Error al subir el archivo al servidor FTP');
@@ -103,7 +103,7 @@ app.post('/upload', upload.single('file'), (req, res) => {
     client.on('ready', () => {
       console.log('Conexión al servidor FTP exitosa.');
       // Intentar obtener el archivo del servidor FTP
-      client.get('/home/sua/FTP/' + filename, (err, stream) => {
+      client.get('/home/suasebas/' + filename, (err, stream) => {
         if (err) {
           // Mostrar un mensaje de error y responder con un código de estado HTTP 500 en caso de error
           console.error('Error al descargar el archivo del servidor FTP:', err);
@@ -143,7 +143,7 @@ app.delete('/delete/:filename', (req, res) => {
   // Escuchar el evento 'ready' que se dispara cuando el cliente FTP está listo para enviar comandos
   client.on('ready', () => {
     // Eliminar el archivo del servidor FTP
-    client.delete('/home/sua/FTP/' + filename, (err) => {
+    client.delete('/home/suasebas/' + filename, (err) => {
       // Si hay un error al eliminar el archivo, enviar una respuesta con un código de estado 500
       if (err) {
         console.error('Error al eliminar el archivo:', err);
@@ -175,7 +175,7 @@ app.post('/create/:foldername', (req, res) => {
 // Manejar eventos para la conexión FTP
   client.on('ready', () => {
     // Crear la carpeta '/home/sua/FTP/' en el servidor FTP
-    client.mkdir('/home/sua/FTP/' + foldername, true, (err) => {
+    client.mkdir('/home/suasebas/' + foldername, true, (err) => {
       if (err) {
         console.error('Error al crear la carpeta:', err);
         res.status(500).send('Error al crear la carpeta');
