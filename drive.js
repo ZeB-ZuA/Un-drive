@@ -15,8 +15,8 @@ const ftpOptions = {
 const https = require('https');
 const fs = require('fs');
 const sslOptions = {
-  key: fs.readFileSync('/home/suasebas/drive.key'),
-  cert: fs.readFileSync('/home/suasebas/drive.crt'),
+  key: fs.readFileSync('./drive.key'),
+  cert: fs.readFileSync('./drive.crt'),
   passphrase: 'qwe123',
 };
 const Server = https.createServer(sslOptions, app);
